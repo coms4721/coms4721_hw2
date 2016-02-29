@@ -1,0 +1,33 @@
+cross val on the training set, then eval test set. 
+
+A * v = lambda * v
+
+X = (1000, 100)
+C = (100, 100)
+lambda1, lambda2, ..., lambda100
+
+[v1, v2, ..., v100] = transformation matrix (100, 100) = Q
+
+Z = XQ = (1000, 100)
+
+
+w1 * x1 + w2 * x2 + w3 * x3 = 0
+
+normal vector = (w1, w2, w3) = w vector
+
+2x + 5y + 3z = 0 --> vector perpendicular to plane (2, 5, 3)
+
+w*x = 0
+
+
+
+           |
+           |
+    o      |           x
+           |---------x    x
+  o    o   |           x
+     o     |
+           |
+           |
+
+
