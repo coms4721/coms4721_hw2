@@ -1,0 +1,8 @@
+explain each condition, using, centering or standardization can affect the reuslting classifier
+
+logistic regression, widely used. 
+
+given we do these two things, if we do these on these alg's, do these effect the classifier
+
+
+a matrix, 

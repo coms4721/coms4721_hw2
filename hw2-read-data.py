@@ -10,7 +10,6 @@ Xtrain = data['data']
 Ytest  = data['testlabels'].flatten()
 Xtest  = data['testdata']
 
-
 class Perceptron(object):
 	def fit(self, X, Y):
 		N, D = X.shape
@@ -35,11 +34,9 @@ class Perceptron(object):
 			total_votes += c
 		self.v /= total_votes
 
-
 	def score(self, X, Y):
 		P = np.sign(X.dot(self.v))
 		return np.mean(P == Y)
-
 
 class BigPerceptron(object):
 	def fit(self, X, Y):
@@ -66,7 +63,6 @@ def transform(X):
 	# X2 = (X2 - mu) / std
 	return X2
 
-
 class BigLogistic(object):
 	def fit(self, X, Y):
 		X2 = transform(X)
@@ -76,7 +72,6 @@ class BigLogistic(object):
 	def score(self, X, Y):
 		X2 = transform(X)
 		return self.model.score(X2, Y)
-
 
 def cross_validation(model, X, Y):
 	# split the data into 10 parts
