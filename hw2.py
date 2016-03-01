@@ -25,8 +25,7 @@ class Perceptron(object):
 					new_v = v + Y[i]*X[i]
 					V.append(new_v)
 					C.append(1)
-				# y_hat_i = sign(v dot x_i)
-				# if y_hat_i ==? y[i]...
+				
 		self.v = np.zeros(D)
 		total_votes = 0
 		for c, v in zip(C[1:], V[1:]):
@@ -47,6 +46,53 @@ class BigPerceptron(object):
 	def score(self, X, Y):
 		X2 = transform(X)
 		return self.model.score(X2, Y)
+
+class Gauss1(object):
+	# Ax = b
+	# x = inv_A * b
+	# solve(A, b)
+	def fit(self, X, Y):
+		# w = inv_cov * (mu1 - mu0)
+		# b = 0.5*(mu1 + mu0) * inv_cov * (mu0 - mu1) + log(pi1/pi0)
+		cov = np.cov(X.T)
+		idx1 = np.where(Y == 1)[0]
+		idx0 = np.where(Y == -1)[0]
+		mu0 = X[idx0, :].mean(axis=0)
+		mu1 = X[idx1, :].mean(axis=0)
+		self.w = np.linalg.solve(cov, mu1 - mu0)
+		N = len(Y)
+		pi1 = float(len(idx1)) / N
+		pi0 = float(len(idx0)) / N
+		self.b = -0.5*(mu0 + mu1).dot(self.w) + np.log(pi1/pi0)
+
+	def score(self, X, Y):
+		P = np.sign(X.dot(self.w) + self.b)
+		return np.mean(P == Y)
+
+class Gauss2(object):
+	def fit(self, X, Y):
+		idx1 = np.where(Y == 1)[0]
+		idx0 = np.where(Y == -1)[0]
+
+		x0 = X[idx0, :]
+		x1 = X[idx1, :]
+		mu0 = x0.mean(axis=0)
+		mu1 = x1.mean(axis=0)
+		cov0 = np.cov(x0.T)
+		cov1 = np.cov(x1.T)
+
+		self.A = 0.5*(np.linalg.inv(cov0) - np.linalg.inv(cov1))
+		icov0mu0 = np.linalg.solve(cov0, mu0)
+		icov1mu1 = np.linalg.solve(cov1, mu1)
+		self.w = icov1mu1 - icov0mu0
+		N = len(Y)
+		pi1 = float(len(idx1)) / N
+		pi0 = float(len(idx0)) / N
+		self.b = 0.5*(mu0.dot(icov0mu0) - mu1.dot(icov1mu1)) + np.log(pi1/pi0)	
+
+	def score(self, X, Y):
+		P = np.sign((X.dot(self.A)*X).sum(axis=1) + X.dot(self.w) + self.b)
+		return np.mean(P == Y)
 
 def transform(X):
 	N, D = X.shape
@@ -95,11 +141,13 @@ def cross_validation(model, X, Y):
 
 
 models = {
-	'logistic': LogisticRegression(),
-	'randomforest': RandomForestClassifier(),
-	'perceptron': Perceptron(),
-	'biglogistic': BigLogistic(),
-	'bigperceptron': BigPerceptron(),
+	'2. logistic': LogisticRegression(),
+	'X. randomforest': RandomForestClassifier(),
+	'1. perceptron': Perceptron(),
+	'6. biglogistic': BigLogistic(),
+	'5. bigperceptron': BigPerceptron(),
+	'3. gauss1': Gauss1(),
+	'4. gauss2': Gauss2(),
 }
 
 def main():
